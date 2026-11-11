@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verifica codice &mdash; WiFi Guest</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="card">
+    <img src="/images/logo.svg" alt="Logo" class="portal-logo" onerror="this.style.display='none'">
+    <h1 class="portal-title">Controlla la tua email</h1>
+    <p class="portal-subtitle">
+      Abbiamo inviato un codice a 6 cifre a<br>
+      <strong id="emailDisplay" style="color:var(--primary)"></strong>
+    </p>
+
+    <div id="alertMsg" class="alert"></div>
+
+    <div class="otp-container" role="group" aria-label="Codice OTP a 6 cifre">
+      <input class="otp-input" type="text" inputmode="numeric" pattern="[0-9]"
+             maxlength="1" autocomplete="one-time-code" aria-label="Cifra 1">
+      <input class="otp-input" type="text" inputmode="numeric" pattern="[0-9]"
+             maxlength="1" aria-label="Cifra 2">
+      <input class="otp-input" type="text" inputmode="numeric" pattern="[0-9]"
+             maxlength="1" aria-label="Cifra 3">
+      <input class="otp-input" type="text" inputmode="numeric" pattern="[0-9]"
+             maxlength="1" aria-label="Cifra 4">
+      <input class="otp-input" type="text" inputmode="numeric" pattern="[0-9]"
+             maxlength="1" aria-label="Cifra 5">
+      <input class="otp-input" type="text" inputmode="numeric" pattern="[0-9]"
+             maxlength="1" aria-label="Cifra 6">
+    </div>
+
+    <button class="btn btn-primary" id="btnVerify">
+      <span class="btn-text">Verifica codice</span>
+      <span class="spinner"></span>
+    </button>
+
+    <div class="resend-area">
+      <span id="resendTimer"></span>
+      <button class="resend-btn" id="btnResend" disabled>
+        Reinvia codice
+      </button>
+    </div>
+
+    <p style="text-align:center;font-size:.8rem;color:var(--text-muted);margin-top:16px">
+      Il codice &egrave; valido per 10 minuti.
+    </p>
+
+    <div class="portal-footer">
+      <a href="/login">&larr; Usa un&apos;altra email</a>
+    </div>
+  </div>
+
+  <script src="/js/main.js?v=3"></script>
+  <script src="/js/otp.js?v=3"></script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<!-- Pagina errore MikroTik (error.html) -->
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Errore — WiFi Guest</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 40px; background: #f3f4f6; }
+    .box { background: #fff; border-radius: 12px; padding: 32px; max-width: 400px; margin: auto; box-shadow: 0 4px 24px rgba(0,0,0,.08); }
+    h2 { color: #dc2626; }
+    p  { color: #6b7280; font-size: 14px; }
+    .code { font-family: monospace; background: #fee2e2; padding: 4px 8px; border-radius: 4px; font-size: 13px; }
+    a.btn { display: inline-block; margin-top: 16px; padding: 10px 24px; background: #2563eb; color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Accesso non riuscito</h2>
+    <p>Si è verificato un errore durante l'accesso alla rete.</p>
+    $(if error-type == "blocked")
+    <p>Il tuo accesso è stato bloccato. Contatta l'assistenza.</p>
+    $(endif)
+    $(if error-type == "newuser")
+    <p>Registrazione non riuscita. Riprova dal portale.</p>
+    $(endif)
+    $(if chap-id)
+    <p>Codice errore: <span class="code">$(error)</span></p>
+    $(endif)
+    <a class="btn" href="$(link-login)">Riprova</a>
+  </div>
+</body>
+</html>

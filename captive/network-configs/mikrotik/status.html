@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<!-- Pagina status MikroTik (status.html) — mostra info sessione attiva -->
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Stato sessione — WiFi Guest</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 40px; background: #f3f4f6; }
+    .box { background: #fff; border-radius: 12px; padding: 32px; max-width: 400px; margin: auto; box-shadow: 0 4px 24px rgba(0,0,0,.08); }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; text-align: left; }
+    td { padding: 8px 4px; font-size: 13px; border-bottom: 1px solid #e5e7eb; color: #374151; }
+    td:first-child { font-weight: 600; color: #6b7280; width: 45%; }
+    a.btn { display: inline-block; margin-top: 16px; padding: 10px 24px; background: #dc2626; color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2 style="color:#2563eb">Sessione attiva</h2>
+    <table>
+      <tr><td>Utente</td><td>$(username)</td></tr>
+      <tr><td>IP</td><td>$(ip)</td></tr>
+      <tr><td>MAC</td><td>$(mac)</td></tr>
+      <tr><td>Tempo connesso</td><td>$(uptime)</td></tr>
+      <tr><td>Dati scaricati</td><td>$(bytes-in)</td></tr>
+      <tr><td>Dati inviati</td><td>$(bytes-out)</td></tr>
+    </table>
+    <a class="btn" href="$(link-logout)">Disconnettiti</a>
+  </div>
+</body>
+</html>

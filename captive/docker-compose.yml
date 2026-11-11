@@ -1,0 +1,50 @@
+services:
+  captive-portal:
+    build: .
+    container_name: captive-portal
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+      # Syslog: mappa porta host 514 → container 5514 (no root needed)
+      - "514:5514/udp"
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - SYSLOG_PORT=5514
+      - TZ=Europe/Rome
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    networks:
+      - captive-net
+
+  # Nginx reverse proxy con SSL
+  nginx:
+    image: nginx:alpine
+    container_name: captive-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+      - ./public:/var/www/static:ro
+    depends_on:
+      captive-portal:
+        condition: service_healthy
+    networks:
+      - captive-net
+    profiles:
+      - production
+
+networks:
+  captive-net:
+    driver: bridge

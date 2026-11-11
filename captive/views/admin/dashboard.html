@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin &mdash; Dashboard</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; background: #f3f4f6; color: #111827; }
+    .topbar { background: #1e293b; color: #fff; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; }
+    .topbar h1 { font-size: 18px; margin: 0; }
+    .topbar form { display: inline; }
+    .topbar button { background: #ef4444; color: #fff; border: none; padding: 8px 14px; border-radius: 6px; font-size: 13px; cursor: pointer; }
+    .wrap { max-width: 1200px; margin: 24px auto; padding: 0 16px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 12px; margin-bottom: 24px; }
+    .card { background: #fff; padding: 18px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+    .card .label { font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: .5px; }
+    .card .value { font-size: 28px; font-weight: 700; color: #1e293b; margin-top: 6px; }
+    .panel { background: #fff; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,.06); padding: 20px; margin-bottom: 20px; }
+    .panel h2 { font-size: 16px; margin: 0 0 16px; }
+    .filters { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 16px; }
+    .filters label { display: block; font-size: 12px; color: #6b7280; margin-bottom: 4px; }
+    .filters input { padding: 8px 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; }
+    .btn { padding: 8px 14px; background: #2563eb; color: #fff; border: none; border-radius: 6px; font-size: 13px; cursor: pointer; font-weight: 600; }
+    .btn.ghost { background: #fff; color: #2563eb; border: 1px solid #2563eb; }
+    .btn.danger { background: #ef4444; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { padding: 10px 8px; border-bottom: 1px solid #e5e7eb; text-align: left; vertical-align: top; }
+    th { background: #f9fafb; font-weight: 600; color: #374151; font-size: 12px; text-transform: uppercase; letter-spacing: .5px; }
+    tr:hover { background: #f9fafb; }
+    .anon { color: #9ca3af; font-style: italic; }
+    .pager { display: flex; gap: 8px; justify-content: center; margin-top: 12px; align-items: center; font-size: 13px; }
+    .chart { height: 120px; display: flex; align-items: flex-end; gap: 2px; }
+    .chart .bar { flex: 1; background: #93c5fd; border-radius: 3px 3px 0 0; position: relative; min-height: 2px; }
+    .chart .bar:hover { background: #2563eb; }
+    .chart .bar span { display: none; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background: #1e293b; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 11px; white-space: nowrap; }
+    .chart .bar:hover span { display: block; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+    .badge.yes { background: #d1fae5; color: #065f46; }
+    .badge.no { background: #fee2e2; color: #991b1b; }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <h1>WiFi Captive Portal &mdash; Admin</h1>
+    <form method="POST" action="/admin/logout"><button type="submit">Logout</button></form>
+  </div>
+
+  <div class="wrap">
+    <!-- Statistiche -->
+    <div class="grid" id="statsGrid"></div>
+
+    <!-- Grafico ultimi 30 giorni -->
+    <div class="panel">
+      <h2>Accessi ultimi 30 giorni</h2>
+      <div class="chart" id="chart"></div>
+    </div>
+
+    <!-- Log Navigazione -->
+    <div class="panel">
+      <h2>Log navigazione <span style="font-size:12px;font-weight:400;color:#6b7280">(da Audit Log gateway — Decreto Pisanu)</span></h2>
+      <div class="filters">
+        <div><label>Dal</label><input type="date" id="nFrom"></div>
+        <div><label>Al</label><input type="date" id="nTo"></div>
+        <div style="flex:1"><label>Cerca (email/MAC/dominio)</label><input type="text" id="nSearch" style="width:100%"></div>
+        <div>
+          <label>Righe/pag.</label>
+          <select id="navLimitSel" style="padding:8px 10px;border:1px solid #d1d5db;border-radius:6px;font-size:14px">
+            <option value="10">10</option>
+            <option value="20" selected>20</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+        </div>
+        <div><button class="btn" id="btnNavFilter">Filtra</button></div>
+        <div><button class="btn ghost" id="btnNavExport">Export CSV</button></div>
+        <div><button class="btn ghost" id="btnNavDebug" title="Mostra ultimi messaggi syslog raw ricevuti">Debug Syslog</button></div>
+      </div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr><th>Data</th><th>IP</th><th>MAC</th><th>Email</th><th>Nome</th><th>Dominio</th><th>URL</th></tr></thead>
+          <tbody id="navRows"></tbody>
+        </table>
+      </div>
+      <div class="pager">
+        <button class="btn ghost" id="navPrev">&larr; Prec</button>
+        <span id="navPageInfo">Pagina 1</span>
+        <button class="btn ghost" id="navNext">Succ &rarr;</button>
+      </div>
+    </div>
+
+    <!-- Tabella accessi -->
+    <div class="panel">
+      <h2>Registro accessi</h2>
+      <div class="filters">
+        <div><label>Dal</label><input type="date" id="fFrom"></div>
+        <div><label>Al</label><input type="date" id="fTo"></div>
+        <div style="flex:1"><label>Cerca (email/nome/MAC)</label><input type="text" id="fSearch" style="width:100%"></div>
+        <div>
+          <label>Righe/pag.</label>
+          <select id="limitSel" style="padding:8px 10px;border:1px solid #d1d5db;border-radius:6px;font-size:14px">
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50" selected>50</option>
+            <option value="100">100</option>
+          </select>
+        </div>
+        <div><button class="btn" id="btnFilter">Filtra</button></div>
+        <div><button class="btn ghost" id="btnExport">Export CSV</button></div>
+      </div>
+
+      <div style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr>
+              <th>Data</th><th>Email</th><th>Nome</th><th>MAC</th><th>IP</th>
+              <th>SSID</th><th>GDPR</th><th>Marketing</th><th>Azioni</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+
+      <div class="pager">
+        <button class="btn ghost" id="prev">&larr; Prec</button>
+        <span id="pageInfo">Pagina 1</span>
+        <button class="btn ghost" id="next">Succ &rarr;</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let page = 1;
+
+    function limit() {
+      return parseInt(document.getElementById('limitSel').value) || 50;
+    }
+
+    async function loadStats() {
+      const r = await fetch('/admin/api/stats').then(r => r.json());
+      document.getElementById('statsGrid').innerHTML = `
+        <div class="card"><div class="label">Accessi totali</div><div class="value">${r.total}</div></div>
+        <div class="card"><div class="label">Oggi</div><div class="value">${r.today}</div></div>
+        <div class="card"><div class="label">Ultimi 7 giorni</div><div class="value">${r.last7days}</div></div>
+        <div class="card"><div class="label">Ultimi 30 giorni</div><div class="value">${r.last30days}</div></div>
+        <div class="card"><div class="label">Utenti unici</div><div class="value">${r.uniqueUsers}</div></div>
+        <div class="card"><div class="label">Consenso marketing</div><div class="value">${r.marketing}</div></div>
+      `;
+
+      const chart = document.getElementById('chart');
+      const max = Math.max(1, ...r.byDay.map(d => d.n));
+      // Riempi i giorni mancanti
+      const days = [];
+      for (let i = 29; i >= 0; i--) {
+        const d = new Date(); d.setDate(d.getDate() - i);
+        const k = d.toISOString().slice(0, 10);
+        const found = r.byDay.find(x => x.day === k);
+        days.push({ day: k, n: found ? found.n : 0 });
+      }
+      chart.innerHTML = days.map(d =>
+        `<div class="bar" style="height:${(d.n/max)*100}%"><span>${d.day}: ${d.n}</span></div>`
+      ).join('');
+    }
+
+    async function loadList() {
+      const params = new URLSearchParams({ page, limit: limit() });
+      const from = document.getElementById('fFrom').value;
+      const to   = document.getElementById('fTo').value;
+      const search = document.getElementById('fSearch').value.trim();
+      if (from)   params.set('from', from);
+      if (to)     params.set('to', to + ' 23:59:59');
+      if (search) params.set('search', search);
+
+      const r = await fetch('/admin/api/list?' + params).then(r => r.json());
+      const tbody = document.getElementById('rows');
+      if (!r.rows.length) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#9ca3af;padding:24px">Nessun accesso trovato</td></tr>';
+      } else {
+        tbody.innerHTML = r.rows.map(row => `
+          <tr>
+            <td>${row.authenticated_at}</td>
+            <td class="${row.anonymized?'anon':''}">${escapeHtml(row.email)}</td>
+            <td class="${row.anonymized?'anon':''}">${escapeHtml((row.nome||'') + ' ' + (row.cognome||''))}</td>
+            <td><code>${row.mac}</code></td>
+            <td>${row.ip||''}</td>
+            <td>${row.ssid||''}</td>
+            <td><span class="badge ${row.gdpr_consent?'yes':'no'}">${row.gdpr_consent?'Sì':'No'}</span></td>
+            <td><span class="badge ${row.marketing_consent?'yes':'no'}">${row.marketing_consent?'Sì':'No'}</span></td>
+            <td>${row.anonymized ? '<span class="anon">anonimizzato</span>' :
+              `<button class="btn danger" onclick="anonymize('${escapeAttr(row.email)}')">Anonimizza</button>`}</td>
+          </tr>
+        `).join('');
+      }
+      const totalPages = Math.max(1, Math.ceil(r.total / limit()));
+      document.getElementById('pageInfo').textContent = `Pagina ${page} di ${totalPages} — ${r.total} accessi`;
+      document.getElementById('prev').disabled = page <= 1;
+      document.getElementById('next').disabled = page >= totalPages;
+    }
+
+    async function anonymize(email) {
+      if (!confirm(`Anonimizzare tutti i record di ${email}?\n\nQuesta operazione rimuove i dati personali ma mantiene il log tecnico (MAC, IP, timestamp) come richiesto dal Decreto Pisanu.`)) return;
+      const r = await fetch('/admin/api/anonymize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      }).then(r => r.json());
+      alert(`${r.anonymizedRecords} record anonimizzati`);
+      loadList();
+      loadStats();
+    }
+
+    function escapeHtml(s) {
+      return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+    function escapeAttr(s) { return (s||'').replace(/'/g, "\\'"); }
+
+    document.getElementById('btnFilter').onclick = () => { page = 1; loadList(); };
+    document.getElementById('limitSel').onchange = () => { page = 1; loadList(); };
+    document.getElementById('prev').onclick = () => { page--; loadList(); };
+    document.getElementById('next').onclick = () => { page++; loadList(); };
+    document.getElementById('btnExport').onclick = () => {
+      const p = new URLSearchParams();
+      const from = document.getElementById('fFrom').value;
+      const to   = document.getElementById('fTo').value;
+      if (from) p.set('from', from);
+      if (to)   p.set('to', to + ' 23:59:59');
+      window.location.href = '/admin/api/export?' + p;
+    };
+
+    // ── Nav Logs ──────────────────────────────────────────────────────────────
+    let navPage = 1;
+
+    function navLimit() {
+      return parseInt(document.getElementById('navLimitSel').value) || 20;
+    }
+
+    async function loadNavLogs() {
+      const params = new URLSearchParams({ page: navPage, limit: navLimit() });
+      const from   = document.getElementById('nFrom').value;
+      const to     = document.getElementById('nTo').value;
+      const search = document.getElementById('nSearch').value.trim();
+      if (from)   params.set('from', from);
+      if (to)     params.set('to', to + ' 23:59:59');
+      if (search) params.set('search', search);
+
+      const r = await fetch('/admin/api/navlogs?' + params).then(r => r.json());
+      const tbody = document.getElementById('navRows');
+      if (!r.rows || !r.rows.length) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#9ca3af;padding:16px">Nessun log ricevuto — verifica che il gateway invii syslog a questo server</td></tr>';
+      } else {
+        tbody.innerHTML = r.rows.map(row => `
+          <tr>
+            <td style="white-space:nowrap">${row.logged_at}</td>
+            <td>${row.client_ip||''}</td>
+            <td><code>${row.mac||''}</code></td>
+            <td>${row.email ? `<a href="mailto:${escapeHtml(row.email)}">${escapeHtml(row.email)}</a>` : '<span style="color:#9ca3af">—</span>'}</td>
+            <td>${escapeHtml((row.nome||'').trim())}</td>
+            <td><strong>${escapeHtml(row.domain||'')}</strong></td>
+            <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escapeHtml(row.url||'')}">${escapeHtml(row.url||'')}</td>
+          </tr>`).join('');
+      }
+      const totalPages = Math.max(1, Math.ceil(r.total / navLimit()));
+      document.getElementById('navPageInfo').textContent = `Pagina ${navPage} di ${totalPages} — ${r.total} log`;
+      document.getElementById('navPrev').disabled = navPage <= 1;
+      document.getElementById('navNext').disabled = navPage >= totalPages;
+    }
+
+    document.getElementById('btnNavFilter').onclick = () => { navPage = 1; loadNavLogs(); };
+    document.getElementById('navPrev').onclick = () => { navPage--; loadNavLogs(); };
+    document.getElementById('navNext').onclick = () => { navPage++; loadNavLogs(); };
+    document.getElementById('navLimitSel').onchange = () => { navPage = 1; loadNavLogs(); };
+    document.getElementById('btnNavExport').onclick = () => {
+      const p = new URLSearchParams();
+      const from = document.getElementById('nFrom').value;
+      const to   = document.getElementById('nTo').value;
+      if (from) p.set('from', from);
+      if (to)   p.set('to', to + ' 23:59:59');
+      window.location.href = '/admin/api/navlogs/export?' + p;
+    };
+    document.getElementById('btnNavDebug').onclick = async () => {
+      const r = await fetch('/admin/api/navlogs/debug').then(r => r.json());
+      if (!r.count) { alert('Nessun messaggio syslog ricevuto ancora.\nVerifica che il gateway invii i log UDP a questo server.'); return; }
+      const lines = r.messages.slice(0, 20).map(m =>
+        `[${m.ts}] FROM ${m.from}\n${m.raw}`
+      ).join('\n\n');
+      alert(`Ultimi ${Math.min(r.count,20)} messaggi syslog (di ${r.count}):\n\n${lines}`);
+    };
+
+    loadStats();
+    loadList();
+    loadNavLogs();
+  </script>
+</body>
+</html>

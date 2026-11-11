@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accedi &mdash; WiFi Guest</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="card">
+    <img src="/images/logo.svg" alt="Logo" class="portal-logo" onerror="this.style.display='none'">
+    <h1 class="portal-title">Bentornato</h1>
+    <p class="portal-subtitle">Inserisci la tua email per ricevere il codice di accesso</p>
+
+    <div id="alertMsg" class="alert"></div>
+
+    <form id="loginForm" novalidate>
+      <div class="form-group">
+        <label for="email">Indirizzo email</label>
+        <input type="email" id="email" name="email" autocomplete="email"
+               placeholder="mario.rossi@email.it" maxlength="255" autofocus>
+      </div>
+
+      <button type="submit" class="btn btn-primary" id="btnSubmit">
+        <span class="btn-text">Invia codice di accesso</span>
+        <span class="spinner"></span>
+      </button>
+    </form>
+
+    <p class="text-center mt-4">
+      Prima volta qui?
+      <a href="/register" class="link">Registrati gratis</a>
+    </p>
+
+    <div class="portal-footer">
+      <a href="/">&larr; Torna indietro</a>
+    </div>
+  </div>
+
+  <script src="/js/main.js?v=3"></script>
+  <script src="/js/login.js"></script>
+</body>
+</html>

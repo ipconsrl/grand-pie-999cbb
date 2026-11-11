@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrazione &mdash; WiFi Guest</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="card">
+    <img src="/images/logo.svg" alt="Logo" class="portal-logo" onerror="this.style.display='none'">
+    <h1 class="portal-title">Crea il tuo account</h1>
+    <p class="portal-subtitle">Inserisci i tuoi dati per accedere alla rete WiFi</p>
+
+    <div id="alertMsg" class="alert"></div>
+
+    <form id="registerForm" novalidate>
+      <div class="form-group">
+        <label for="nome">Nome *</label>
+        <input type="text" id="nome" name="nome" autocomplete="given-name"
+               placeholder="Es. Mario" maxlength="50">
+        <span class="field-error" id="err_nome"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="cognome">Cognome *</label>
+        <input type="text" id="cognome" name="cognome" autocomplete="family-name"
+               placeholder="Es. Rossi" maxlength="50">
+        <span class="field-error" id="err_cognome"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email *</label>
+        <input type="email" id="email" name="email" autocomplete="email"
+               placeholder="mario.rossi@email.it" maxlength="255">
+        <span class="field-error" id="err_email"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="telefono">Telefono <span style="color:var(--text-muted);font-weight:400">(opzionale)</span></label>
+        <input type="tel" id="telefono" name="telefono" autocomplete="tel"
+               placeholder="+39 333 1234567" maxlength="20">
+        <span class="field-error" id="err_telefono"></span>
+      </div>
+
+      <div class="checkbox-group">
+        <input type="checkbox" id="gdprConsent" name="gdprConsent">
+        <label for="gdprConsent" class="checkbox-label">
+          * Accetto la <a href="/privacy" target="_blank">Privacy Policy</a> e i
+          <a href="/terms" target="_blank">Termini di Servizio</a>
+        </label>
+      </div>
+      <span class="field-error" id="err_gdprConsent" style="margin-top:-10px;margin-bottom:10px;display:none"></span>
+
+      <div class="checkbox-group">
+        <input type="checkbox" id="marketingConsent" name="marketingConsent">
+        <label for="marketingConsent" class="checkbox-label">
+          Acconsento a ricevere comunicazioni promozionali (opzionale)
+        </label>
+      </div>
+
+      <button type="submit" class="btn btn-primary" id="btnSubmit">
+        <span class="btn-text">Invia codice di verifica</span>
+        <span class="spinner"></span>
+      </button>
+    </form>
+
+    <p class="text-center mt-4">
+      Hai gi&agrave; un account?
+      <a href="/login" class="link">Accedi</a>
+    </p>
+
+    <div class="portal-footer">
+      <a href="/">&larr; Torna indietro</a>
+    </div>
+  </div>
+
+  <script src="/js/main.js?v=3"></script>
+  <script src="/js/register.js"></script>
+</body>
+</html>

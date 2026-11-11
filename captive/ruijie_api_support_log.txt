@@ -1,0 +1,109 @@
+================================================================================
+RUIJIE CLOUD API - SUPPORT REQUEST
+Generated: 2026-05-21T08:19:04Z
+================================================================================
+
+CUSTOMER INFORMATION
+--------------------
+Cloud Region:  EU  (https://cloud-eu.ruijienetworks.com)
+App ID:        open92351d441774
+Device:        Ruijie RG-EG105G-V3 (ReyeeOS)
+Node.js:       v24.14.1
+OS:            Windows 10/11 (build 26200)
+
+OBJECTIVE
+---------
+We are running a WiFiDog captive portal (self-hosted, Node.js) integrated with
+the RG-EG105G-V3 using the WiFiDog authentication protocol.
+
+After a user authenticates via OTP email verification, we want to:
+  1. Register the user in Ruijie Cloud User Manager (name, email, MAC address)
+  2. Optionally read the connected client list for our local admin dashboard
+
+API CREDENTIALS STATUS
+----------------------
+App ID and Secret were obtained from Ruijie Cloud EU > Open API section.
+The App ID format suggests it is an "Open API" type app (prefix: "open").
+
+ISSUE
+-----
+All API authentication attempts fail. We cannot obtain an access_token.
+See test results below.
+
+TEST RESULTS
+------------
+
+[TEST 1] OAuth2 Client Credentials Flow
+  Endpoint:  POST https://cloud-eu.ruijienetworks.com/service/api/oauth20/client/access_token
+  Body:      {"appid":"open92351d441774","secret":"310fb52e886644348d1e92387e1cfb0d"}
+  Response:  HTTP 200
+             {"code":5,"msg":"You do not have permission to perform this operation."}
+  Analysis:  code:5 = insufficient permissions on this endpoint for this appid type
+
+[TEST 2] Login Endpoint (appid + secret only)
+  Endpoint:  GET https://cloud-eu.ruijienetworks.com/service/api/login?appid=...&secret=...
+  Response:  HTTP 200
+             {"code":1,"msg":"Login failed"}
+  Analysis:  code:1 = login failed — possibly requires account+password in addition to appid+secret
+
+[TEST 3] Group Tree Read (using appid as access_token)
+  Endpoint:  GET /service/api/group/single/tree?depth=LOCATION&access_token=open92351d441774
+  Response:  HTTP 200
+             {"code":3,"msg":"Login timeout"}
+  Analysis:  code:3 = token expired/invalid — endpoint exists and is reachable,
+             but appid cannot be used directly as access_token
+
+[TEST 4] UserGroup List Read
+  Endpoint:  GET /service/api/intl/usergroup/list/0?pageIndex=0&pageSize=10&access_token=open92351d441774
+  Response:  HTTP 200
+             {"code":3,"msg":"Login timeout"}
+  Analysis:  Same as TEST 3 — endpoint reachable, token invalid
+
+[TEST 5] Token Refresh
+  Endpoint:  GET /service/api/token/refresh?appid=...&secret=...&access_token=open92351d441774
+  Response:  HTTP 200
+             {"code":3,"msg":"Login timeout"}
+  Analysis:  Refresh also fails — no valid token exists to refresh
+
+ERROR CODE SUMMARY
+------------------
+  code:1  = Login failed
+  code:3  = Login timeout (token invalid/expired)
+  code:5  = No permission to perform this operation
+
+QUESTIONS FOR SUPPORT
+---------------------
+1. Does the appid "open92351d441774" (prefix: "open") support the
+   OAuth2 client_credentials flow via /service/api/oauth20/client/access_token?
+   If not, which authentication endpoint should be used for this appid type?
+
+2. Is there an activation step required after creating the Open API app
+   before the appid/secret can be used to obtain an access_token?
+
+3. Is there a specific API endpoint to add/register a user (with name, email,
+   MAC address) to the Ruijie Cloud User Manager programmatically?
+
+4. Does the EU cloud (cloud-eu.ruijienetworks.com) use the same API paths
+   as the AS cloud (cloud-as.ruijienetworks.com)?
+
+5. The /service/api/login endpoint returns code:1 with only appid+secret.
+   Does this endpoint require Ruijie Cloud account credentials
+   (account + password) in addition to appid+secret?
+
+REFERENCE DOCUMENTATION USED
+-----------------------------
+- Ruijie Cloud API Reference Manual V1.11
+  https://www.scribd.com/document/747557664/Ruijie-RG-Ruijie-Cloud-API-Reference-Manual-V1-11-1
+- Ruijie Cloud API Document (PDFCoffee)
+  https://pdfcoffee.com/ruijie-cloud-api-document-pdf-free.html
+
+CONTACT
+-------
+Please reply with:
+  - The correct authentication flow for appid type "open*" on EU cloud
+  - The API endpoint and request format to add a user to User Manager
+  - Any required activation steps for the Open API app
+
+Email: service_rj@ruijienetworks.com
+
+================================================================================

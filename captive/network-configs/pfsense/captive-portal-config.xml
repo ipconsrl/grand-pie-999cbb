@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!--
+  pfSense Captive Portal — Configurazione di esempio
+  Importare via: Diagnostics → Backup & Restore → Restore → seleziona sezione "captiveportal"
+
+  NOTA: sostituire i placeholder prima dell'importazione:
+    YOUR_PORTAL_URL  = URL del tuo server captive portal
+    YOUR_SERVER_IP   = IP del server captive portal
+    RADIUS_SECRET    = segreto RADIUS (uguale a RADIUS_SECRET nel .env)
+    INTERFACE        = nome interfaccia pfSense (es. opt1, lan)
+-->
+<pfsense>
+  <captiveportal>
+    <zone>captiveportal</zone>
+    <enable/>
+    <interface>INTERFACE</interface>
+    <maxproc>5</maxproc>
+    <maxconnclientip/>
+    <idletimeout>60</idletimeout>
+    <timeout>1440</timeout>
+    <freelogins_count/>
+    <freelogins_resettimeout/>
+    <logoutwin_always/>
+    <enable_redirecturl/>
+    <redirecturl>YOUR_PORTAL_URL</redirecturl>
+    <preauthurl>YOUR_PORTAL_URL/?gwAddress=$GATEWAY_ADDRESS&amp;gwPort=$GATEWAY_PORT&amp;userMac=$CLIENT_MAC&amp;userip=$CLIENT_IP</preauthurl>
+    <authtype>radius</authtype>
+    <radiusip>YOUR_SERVER_IP</radiusip>
+    <radiusport>1812</radiusport>
+    <radiuskey>RADIUS_SECRET</radiuskey>
+    <radiusip2/>
+    <radiusport2/>
+    <radiuskey2/>
+    <reauthenticate/>
+    <reauthenticateacct>stopstart</reauthenticateacct>
+    <radacct_enable/>
+    <radiusacctip>YOUR_SERVER_IP</radiusacctip>
+    <radiusacctport>1813</radiusacctport>
+    <radiusacctkey>RADIUS_SECRET</radiusacctkey>
+    <radmac_enable/>
+    <httpslogin/>
+    <httpsname/>
+    <nohttpsforwards/>
+    <allowedip>
+      <ip>YOUR_SERVER_IP</ip>
+      <sn>32</sn>
+      <dir>both</dir>
+    </allowedip>
+  </captiveportal>
+</pfsense>

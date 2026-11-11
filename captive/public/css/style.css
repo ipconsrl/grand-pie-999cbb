@@ -1,0 +1,352 @@
+/* ============================================================
+   CAPTIVE PORTAL — Stile principale
+   Mobile-first, design moderno, variabili CSS per tema
+   ============================================================ */
+
+:root {
+  --primary:        #2563eb;
+  --primary-dark:   #1d4ed8;
+  --primary-light:  #dbeafe;
+  --success:        #16a34a;
+  --success-light:  #dcfce7;
+  --error:          #dc2626;
+  --error-light:    #fee2e2;
+  --warning:        #d97706;
+  --text:           #111827;
+  --text-muted:     #6b7280;
+  --border:         #e5e7eb;
+  --bg:             #f3f4f6;
+  --card-bg:        #ffffff;
+  --radius:         12px;
+  --radius-sm:      8px;
+  --shadow:         0 4px 24px rgba(0,0,0,.08);
+  --shadow-sm:      0 2px 8px rgba(0,0,0,.06);
+  --font:           'Inter', system-ui, -apple-system, sans-serif;
+  --transition:     .18s ease;
+}
+
+/* ── Reset ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+/* ── Layout card ────────────────────────────────────── */
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 32px 28px;
+  width: 100%;
+  max-width: 440px;
+  animation: fadeIn .3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Logo e header ──────────────────────────────────── */
+.portal-logo {
+  display: block;
+  max-width: 120px;
+  max-height: 60px;
+  margin: 0 auto 20px;
+  object-fit: contain;
+}
+
+.portal-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--primary);
+  margin-bottom: 6px;
+}
+
+.portal-subtitle {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: .92rem;
+  margin-bottom: 28px;
+}
+
+/* ── Form ───────────────────────────────────────────── */
+.form-group {
+  margin-bottom: 16px;
+}
+
+label {
+  display: block;
+  font-size: .875rem;
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: var(--text);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"] {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  color: var(--text);
+  background: #fff;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  outline: none;
+}
+
+input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+}
+
+input.error { border-color: var(--error); }
+input.error:focus { box-shadow: 0 0 0 3px rgba(220,38,38,.12); }
+
+.field-error {
+  font-size: .8rem;
+  color: var(--error);
+  margin-top: 4px;
+  display: none;
+}
+.field-error.visible { display: block; }
+
+/* ── Checkbox ───────────────────────────────────────── */
+.checkbox-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.checkbox-group input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.checkbox-label {
+  font-size: .875rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.checkbox-label a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+.checkbox-label a:hover { text-decoration: underline; }
+
+/* ── Bottoni ────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: background var(--transition), transform var(--transition), opacity var(--transition);
+  width: 100%;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+.btn-primary:hover  { background: var(--primary-dark); }
+.btn-primary:active { transform: scale(.98); }
+
+.btn-outline {
+  background: transparent;
+  color: var(--primary);
+  border: 1.5px solid var(--primary);
+}
+.btn-outline:hover { background: var(--primary-light); }
+
+.btn:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-sm {
+  padding: 7px 16px;
+  font-size: .875rem;
+  width: auto;
+}
+
+/* ── Divider ────────────────────────────────────────── */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  color: var(--text-muted);
+  font-size: .85rem;
+}
+.divider::before, .divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── Alert / messaggi ───────────────────────────────── */
+.alert {
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  font-size: .875rem;
+  margin-bottom: 16px;
+  display: none;
+  line-height: 1.5;
+}
+.alert.visible { display: block; }
+.alert-error   { background: var(--error-light);   color: var(--error);   border: 1px solid #fca5a5; }
+.alert-success { background: var(--success-light); color: var(--success); border: 1px solid #86efac; }
+.alert-info    { background: var(--primary-light); color: var(--primary); border: 1px solid #93c5fd; }
+
+/* ── OTP Input ──────────────────────────────────────── */
+.otp-container {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 24px 0;
+}
+
+.otp-input {
+  width: 50px;
+  height: 60px;
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: 700;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  color: var(--text);
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  caret-color: var(--primary);
+}
+
+.otp-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+}
+
+.otp-input.filled {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+
+.otp-input.error-state {
+  border-color: var(--error);
+  background: var(--error-light);
+  animation: shake .3s ease;
+}
+
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  25%      { transform: translateX(-6px); }
+  75%      { transform: translateX(6px); }
+}
+
+/* ── Resend / timer ─────────────────────────────────── */
+.resend-area {
+  text-align: center;
+  font-size: .875rem;
+  color: var(--text-muted);
+  margin-top: 16px;
+}
+
+.resend-btn {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: .875rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 2px 4px;
+  text-decoration: underline;
+}
+.resend-btn:disabled {
+  color: var(--text-muted);
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+/* ── Success page ───────────────────────────────────── */
+.success-icon {
+  width: 72px;
+  height: 72px;
+  background: var(--success-light);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 2rem;
+}
+
+/* ── Link ───────────────────────────────────────────── */
+.text-center { text-align: center; }
+.mt-4  { margin-top: 16px; }
+.mt-2  { margin-top: 8px; }
+.link  {
+  color: var(--primary);
+  text-decoration: none;
+  font-size: .875rem;
+}
+.link:hover { text-decoration: underline; }
+
+/* ── Spinner ────────────────────────────────────────── */
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid rgba(255,255,255,.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin .6s linear infinite;
+  display: none;
+}
+.spinner.visible { display: inline-block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Footer ─────────────────────────────────────────── */
+.portal-footer {
+  margin-top: 28px;
+  text-align: center;
+  font-size: .8rem;
+  color: var(--text-muted);
+}
+.portal-footer a { color: var(--text-muted); }
+
+/* ── Responsive tweaks ──────────────────────────────── */
+@media (max-width: 480px) {
+  .card { padding: 24px 18px; }
+  .otp-input { width: 42px; height: 52px; font-size: 1.4rem; }
+  .otp-container { gap: 7px; }
+}

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin &mdash; Login</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .admin-card { max-width: 380px; margin: 80px auto; padding: 32px; background: #fff; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,.08); }
+    .admin-card h1 { font-size: 22px; margin: 0 0 4px; color: #111827; }
+    .admin-card .sub { color: #6b7280; font-size: 14px; margin-bottom: 24px; }
+    .admin-card label { display: block; margin: 14px 0 6px; font-size: 13px; color: #374151; font-weight: 600; }
+    .admin-card input { width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 15px; box-sizing: border-box; }
+    .admin-card button { width: 100%; padding: 12px; margin-top: 20px; background: #2563eb; color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; }
+    .admin-card .err { background: #fef2f2; color: #991b1b; padding: 10px 14px; border-radius: 6px; font-size: 13px; margin-bottom: 16px; }
+  </style>
+</head>
+<body style="background:#f3f4f6">
+  <div class="admin-card">
+    <h1>Admin Portal</h1>
+    <p class="sub">Accesso registro accessi WiFi</p>
+    <div class="err" id="errBox" style="display:none">Credenziali errate</div>
+    <form method="POST" action="/admin/login">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" autocomplete="username" required autofocus>
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" autocomplete="current-password" required>
+      <button type="submit">Accedi</button>
+    </form>
+  </div>
+  <script>
+    if (new URLSearchParams(location.search).get('err')) {
+      document.getElementById('errBox').style.display = 'block';
+    }
+  </script>
+</body>
+</html>

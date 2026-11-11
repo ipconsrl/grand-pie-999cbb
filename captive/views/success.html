@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connesso &mdash; WiFi Guest</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="card">
+    <div class="success-icon">&#10003;</div>
+    <h1 class="portal-title" style="color:var(--success)">Sei connesso!</h1>
+    <p class="portal-subtitle">
+      Benvenuto, <strong id="userName"></strong>.<br>
+      Ora puoi navigare liberamente su internet.
+    </p>
+
+    <div style="background:var(--primary-light);border-radius:var(--radius-sm);padding:16px;margin:20px 0;font-size:.875rem;color:var(--primary)">
+      <strong>Sessione attiva</strong><br>
+      La tua sessione scade tra 24 ore.
+    </div>
+
+    <button class="btn btn-outline" id="btnDisconnect">
+      <span class="btn-text">Disconnettiti</span>
+      <span class="spinner"></span>
+    </button>
+
+    <div class="portal-footer">
+      <p>Problemi con la connessione?
+        <a href="/" class="link">Riconnettiti</a>
+      </p>
+    </div>
+  </div>
+
+  <script src="/js/main.js?v=3"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      try {
+        const ctx = JSON.parse(sessionStorage.getItem('verifyContext') || '{}');
+        const nameEl = document.getElementById('userName');
+        if (nameEl && ctx.nome) nameEl.textContent = ctx.nome;
+      } catch {}
+
+      document.getElementById('btnDisconnect')?.addEventListener('click', async (e) => {
+        const btn = e.currentTarget;
+        setButtonLoading(btn, true);
+        try {
+          const portalData = getPortalData();
+          await apiCall('/api/network/logout', 'POST', portalData);
+          clearToken();
+          window.location.href = '/';
+        } catch {
+          clearToken();
+          window.location.href = '/';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

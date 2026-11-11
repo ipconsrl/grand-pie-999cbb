@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<!-- Template da caricare su MikroTik in: IP → Hotspot → Server Profiles → Login Page
+     Questo file reindirizza al captive portal esterno passando tutti i parametri
+     necessari per l'autorizzazione post-OTP.
+
+     Variabili MikroTik disponibili (sostituite automaticamente dal firmware):
+       $(link-login-only)  = URL di autenticazione hotspot MikroTik
+       $(link-orig)        = URL originale richiesto dall'utente
+       $(mac)              = MAC address del client
+       $(ip)               = IP address del client
+       $(server-name)      = Nome del server hotspot
+       $(server-address)   = Indirizzo del server hotspot
+-->
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="refresh" content="0; url=CAPTIVE_PORTAL_URL/?mac=$(mac)&ip=$(ip)&link-login-only=$(link-login-only)&link-orig=$(link-orig)&server=$(server-name)">
+  <title>Reindirizzamento...</title>
+</head>
+<body>
+  <p>Reindirizzamento al portale di accesso...</p>
+  <script>
+    // IMPORTANTE: sostituire CAPTIVE_PORTAL_URL con l'URL reale del tuo server
+    // Esempio: https://wifi.tuodominio.it
+    var portalUrl = 'CAPTIVE_PORTAL_URL';
+    var params = new URLSearchParams({
+      mac:              '$(mac)',
+      ip:               '$(ip)',
+      'link-login-only': encodeURIComponent('$(link-login-only)'),
+      'link-orig':       encodeURIComponent('$(link-orig)'),
+      server:            '$(server-name)'
+    });
+    window.location.href = portalUrl + '/?' + params.toString();
+  </script>
+</body>
+</html>

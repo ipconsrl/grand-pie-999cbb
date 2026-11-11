@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--
+    Template email OTP — Captive Portal
+    Placeholder sostituiti da email.service.js:
+      {{OTP}}             = codice a 6 cifre
+      {{USER_NAME}}       = nome + cognome utente
+      {{EXPIRES_MINUTES}} = minuti di validità (default 10)
+      {{PORTAL_NAME}}     = nome del portale (da .env)
+      {{COMPANY_NAME}}    = nome azienda (da .env)
+      {{PRIVACY_URL}}     = URL privacy policy
+      {{YEAR}}            = anno corrente
+  -->
+  <title>Il tuo codice di accesso WiFi</title>
+  <style>
+    body { margin: 0; padding: 0; background: #f3f4f6; font-family: Arial, Helvetica, sans-serif; }
+    .wrapper { max-width: 520px; margin: 32px auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,.08); }
+    .header  { background: #2563eb; padding: 28px 32px; text-align: center; }
+    .header h1 { color: #ffffff; margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -.3px; }
+    .body    { padding: 32px; }
+    .greeting { font-size: 16px; color: #111827; margin-bottom: 16px; }
+    .otp-box { background: #eff6ff; border: 2px solid #2563eb; border-radius: 10px; text-align: center; padding: 28px 16px; margin: 24px 0; }
+    .otp-label { font-size: 13px; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+    .otp-code  { font-size: 44px; font-weight: 700; color: #1d4ed8; letter-spacing: 14px; line-height: 1; }
+    .validity  { font-size: 14px; color: #6b7280; text-align: center; margin-bottom: 24px; }
+    .validity strong { color: #111827; }
+    .divider { border: none; border-top: 1px solid #e5e7eb; margin: 24px 0; }
+    .warning { background: #fef9c3; border-left: 3px solid #eab308; padding: 12px 16px; border-radius: 4px; font-size: 13px; color: #713f12; }
+    .footer { background: #f9fafb; padding: 20px 32px; text-align: center; font-size: 12px; color: #9ca3af; border-top: 1px solid #e5e7eb; }
+    .footer a { color: #6b7280; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <!-- Header -->
+    <div class="header">
+      <h1>{{PORTAL_NAME}}</h1>
+    </div>
+
+    <!-- Corpo email -->
+    <div class="body">
+      <p class="greeting">Ciao <strong>{{USER_NAME}}</strong>,</p>
+      <p style="font-size:15px;color:#374151;margin-bottom:8px">
+        Hai richiesto l'accesso alla rete WiFi Guest.<br>
+        Inserisci il codice qui sotto nel portale per completare la verifica:
+      </p>
+
+      <!-- Box OTP -->
+      <div class="otp-box">
+        <div class="otp-label">Il tuo codice di accesso</div>
+        <div class="otp-code">{{OTP}}</div>
+      </div>
+
+      <p class="validity">
+        Questo codice è valido per <strong>{{EXPIRES_MINUTES}} minuti</strong>.
+      </p>
+
+      <hr class="divider">
+
+      <div class="warning">
+        <strong>⚠ Non condividere questo codice.</strong><br>
+        Nessun membro del nostro staff ti chiederà mai di comunicare questo codice.
+        Se non hai richiesto l'accesso, ignora questa email.
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>
+        Questa email è stata inviata da <strong>{{PORTAL_NAME}}</strong> &mdash; {{COMPANY_NAME}}<br>
+        <a href="{{PRIVACY_URL}}">Privacy Policy</a>
+        &nbsp;·&nbsp;
+        <a href="mailto:support@example.com">Assistenza</a>
+      </p>
+      <p style="margin-top:8px">© {{YEAR}} {{COMPANY_NAME}}. Tutti i diritti riservati.</p>
+    </div>
+  </div>
+</body>
+</html>
